@@ -3,7 +3,19 @@ import "./input.css";
 function App() {
   const [todoText, setTodoText] = useState("");
   const [todoDate, setTodoDate] = useState("");
-  const [todos, setTodos] = useState([]);
+
+ const [todos, setTodos] = useState(() => {
+    const savedTodos = localStorage.getItem("todos");
+    return savedTodos ? JSON.parse(savedTodos) : [];
+  });
+
+  useEffect(() => {
+  
+    localStorage.setItem("todos", JSON.stringify(todos));
+  
+    
+}, [todos]);
+
   const handleTodo = (e) => {
     if (!todoText || !todoDate) return;
     e.preventDefault();
@@ -16,9 +28,8 @@ function App() {
     setTodoText("");
     setTodoDate("");
   };
-  useEffect(() => {
-    console.log(todos);
-  }, [todos]);
+
+
   
   return (
     <div className="flex  justify-center mx-auto w-2xl pt-5 bg-gray-200 rounded-2xl my-4 shadow hover:shadow-2xl hover:shadow-blue-400 h-screen">
@@ -51,7 +62,7 @@ function App() {
           </button>
         </div>
         <div className="mt-8">
-          {todos.map((todo, i) => (
+          {todos.reverse()?.map((todo, i) => (
             <div
               onDoubleClick={() => {
                 setTodos(
